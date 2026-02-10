@@ -32,7 +32,9 @@ function Book() {
 
   useEffect(() => {
     if (!userLoading && connectedUser && book?.title) {
-      const rate = book.ratings.find((elt) => elt.userId === connectedUser.userId);
+      const rate = book.ratings.find(
+        (elt) => elt.userId === connectedUser.userId,
+      );
       if (rate) {
         setUserRated(true);
         setRating(parseInt(rate.grade, 10));
@@ -45,13 +47,13 @@ function Book() {
     } else if (!userLoading && !connectedUser && book) {
       setLoading(false);
     }
-  }, [book, userLoading]);
+  }, [book, userLoading, connectedUser]);
 
   const onDelete = async (e) => {
     if (e.key && e.key !== 'Enter') {
       return;
     }
-    // eslint-disable-next-line no-restricted-globals
+    // eslint-disable-next-line no-alert, no-restricted-globals
     const check = confirm('Etes vous sûr de vouloir supprimer ce livre ?');
     if (check) {
       const del = await deleteBook(book.id);
@@ -61,46 +63,64 @@ function Book() {
     }
   };
 
-  const loadingContent = (<h1>Chargement ...</h1>);
+  const loadingContent = <h1>Chargement ...</h1>;
 
+  /* eslint-disable indent */
+  /* eslint-disable react/jsx-indent */
+  // prettier-ignore
   const bookContent = !loading && !book.delete ? (
-    <div>
-      <div className={styles.Book}>
-        <div className={styles.BookImage} style={{ backgroundImage: `url("${book.imageUrl}")` }} />
-        <div className={styles.BookContent}>
-          {book?.userId === connectedUser?.userId ? (
-            <div className={styles.Owner}>
-              <p>Vous avez publié cet ouvrage, vous pouvez le :</p>
-              <p>
-                <Link to={`/livre/modifier/${book.id}`}>modifier</Link>
-                {' '}
-                <span tabIndex={0} role="button" onKeyUp={onDelete} onClick={onDelete}>supprimer</span>
-                {' '}
-              </p>
-            </div>
-          ) : null}
-          <BookInfo book={book} />
-          <BookRatingForm
-            userRated={userRated}
-            userId={connectedUser?.userId}
-            rating={rating}
-            setRating={setRating}
-            setBook={setBook}
-            id={book.id}
+      <div>
+        <div className={styles.Book}>
+          <div
+            className={styles.BookImage}
+            style={{ backgroundImage: `url("${book.imageUrl}")` }}
           />
+          <div className={styles.BookContent}>
+            {book?.userId === connectedUser?.userId ? (
+              <div className={styles.Owner}>
+                <p>Vous avez publié cet ouvrage, vous pouvez le :</p>
+                <p>
+                  <Link to={`/livre/modifier/${book.id}`}>modifier</Link>
+
+                  <span
+                    tabIndex={0}
+                    role="button"
+                    onKeyUp={onDelete}
+                    onClick={onDelete}
+                  >
+                    supprimer
+                  </span>
+                </p>
+              </div>
+            ) : null}
+            <BookInfo book={book} />
+            <BookRatingForm
+              userRated={userRated}
+              userId={connectedUser?.userId}
+              rating={rating}
+              setRating={setRating}
+              setBook={setBook}
+              id={book.id}
+            />
+          </div>
         </div>
+        <hr />
+        <BestRatedBooks />
       </div>
-      <hr />
-      <BestRatedBooks />
-    </div>
-  ) : null;
+    ) : null;
+  /* eslint-enable indent */
+  /* eslint-enable react/jsx-indent */
+
   const deletedContent = book?.delete ? (
     <div className={styles.Deleted}>
       <h1>{book.title}</h1>
       <p>a bien été supprimé</p>
-      <img src={BookDeleteImage} alt={`Le livre ${book.title} a bien été supprimé`} />
+      <img
+        src={BookDeleteImage}
+        alt={`Le livre ${book.title} a bien été supprimé`}
+      />
       <Link to="/">
-        <button type="button">{'Retour à l\'accueil'}</button>
+        <button type="button">Retour à l&rsquo;accueil</button>
       </Link>
     </div>
   ) : null;
@@ -109,11 +129,8 @@ function Book() {
     <div className="content-container">
       <BackArrow />
       {loading ? loadingContent : null}
-      <div className={styles.BookContainer}>
-        {bookContent}
-      </div>
+      <div className={styles.BookContainer}>{bookContent}</div>
       {book?.delete ? deletedContent : null}
-
     </div>
   );
 }
