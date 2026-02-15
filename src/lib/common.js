@@ -29,6 +29,7 @@ export async function getAuthenticatedUser() {
     }
     return { authenticated: true, user: { userId, token } };
   } catch (err) {
+    // eslint-disable-next-line
     console.error('getAuthenticatedUser, Something Went Wrong', err);
     return defaultReturnObject;
   }
@@ -44,6 +45,7 @@ export async function getBooks() {
     const books = formatBooks(response.data);
     return books;
   } catch (err) {
+    // eslint-disable-next-line
     console.error(err);
     return [];
   }
@@ -60,6 +62,7 @@ export async function getBook(id) {
     book.id = book._id;
     return book;
   } catch (err) {
+    // eslint-disable-next-line
     console.error(err);
     return null;
   }
@@ -73,6 +76,7 @@ export async function getBestRatedBooks() {
     });
     return formatBooks(response.data);
   } catch (e) {
+    // eslint-disable-next-line
     console.error(e);
     return [];
   }
@@ -86,6 +90,7 @@ export async function deleteBook(id) {
     });
     return true;
   } catch (err) {
+    // eslint-disable-next-line
     console.error(err);
     return false;
   }
@@ -98,16 +103,21 @@ export async function rateBook(id, userId, rating) {
   };
 
   try {
-    const response = await axios.post(`${API_ROUTES.BOOKS}/${id}/rating`, data, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+    const response = await axios.post(
+      `${API_ROUTES.BOOKS}/${id}/rating`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       },
-    });
+    );
     const book = response.data;
     // eslint-disable-next-line no-underscore-dangle
     book.id = book._id;
     return book;
   } catch (e) {
+    // eslint-disable-next-line
     console.error(e);
     return e.message;
   }
@@ -121,10 +131,12 @@ export async function addBook(data) {
     author: data.author,
     year: data.year,
     genre: data.genre,
-    ratings: [{
-      userId,
-      grade: data.rating ? parseInt(data.rating, 10) : 0,
-    }],
+    ratings: [
+      {
+        userId,
+        grade: data.rating ? parseInt(data.rating, 10) : 0,
+      },
+    ],
     averageRating: parseInt(data.rating, 10),
   };
   const bodyFormData = new FormData();
@@ -141,6 +153,7 @@ export async function addBook(data) {
       },
     });
   } catch (err) {
+    // eslint-disable-next-line
     console.error(err);
     return { error: true, message: err.message };
   }
@@ -157,7 +170,6 @@ export async function updateBook(data, id) {
     year: data.year,
     genre: data.genre,
   };
-  console.log(data.file[0]);
   if (data.file[0]) {
     newData = new FormData();
     newData.append('book', JSON.stringify(book));
@@ -177,6 +189,7 @@ export async function updateBook(data, id) {
     });
     return newBook;
   } catch (err) {
+    // eslint-disable-next-line
     console.error(err);
     return { error: true, message: err.message };
   }

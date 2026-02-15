@@ -8,10 +8,17 @@ import { APP_ROUTES } from '../../../utils/constants';
 import { useUser } from '../../../lib/customHooks';
 import { rateBook } from '../../../lib/common';
 
+// prettier-ignore
 function BookRatingForm({
-  rating, setRating, userId, setBook, id, userRated,
+  rating,
+  setRating,
+  setBook,
+  id,
+  userRated,
 }) {
   const { connectedUser, auth } = useUser();
+  // eslint-disable-next-line no-underscore-dangle
+  const userId = connectedUser?._id || connectedUser?.userId;
   const navigate = useNavigate();
   const { register, formState, handleSubmit } = useForm({
     mode: 'onChange',
@@ -29,13 +36,14 @@ function BookRatingForm({
   const onSubmit = async () => {
     if (!connectedUser || !auth) {
       navigate(APP_ROUTES.SIGN_IN);
+      return;
     }
     const update = await rateBook(id, userId, rating);
-    console.log(update);
     if (update) {
       // eslint-disable-next-line no-underscore-dangle
       setBook({ ...update, id: update._id });
     } else {
+      // eslint-disable-next-line
       alert(update);
     }
   };
@@ -44,7 +52,9 @@ function BookRatingForm({
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>{rating > 0 ? 'Votre Note' : 'Notez cet ouvrage'}</p>
         <div className={styles.Stars}>
-          {!userRated ? generateStarsInputs(rating, register) : displayStars(rating)}
+          {!userRated
+            ? generateStarsInputs(rating, register)
+            : displayStars(rating)}
         </div>
         {!userRated ? <button type="submit">Valider</button> : null}
       </form>
@@ -55,7 +65,6 @@ function BookRatingForm({
 BookRatingForm.propTypes = {
   rating: PropTypes.number.isRequired,
   setRating: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
   setBook: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   userRated: PropTypes.bool.isRequired,
