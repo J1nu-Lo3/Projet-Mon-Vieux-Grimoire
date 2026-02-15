@@ -47,7 +47,7 @@ function Book() {
     } else if (!userLoading && !connectedUser && book) {
       setLoading(false);
     }
-  }, [book, userLoading, connectedUser]);
+  }, [book, userLoading]);
 
   const onDelete = async (e) => {
     if (e.key && e.key !== 'Enter') {
