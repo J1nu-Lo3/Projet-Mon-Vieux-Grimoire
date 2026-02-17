@@ -7,7 +7,7 @@ const MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 500000,
   },
   fileFilter: (req, file, cb) => {
     if (!MIME_TYPES.includes(file.mimetype)) {
@@ -35,7 +35,7 @@ module.exports = (req, res, next) => {
       await sharp(req.file.buffer)
         .rotate()
         .resize({
-          width: 800,
+          width: 500,
           withoutEnlargement: true,
         })
         .webp({ quality: 80 })
